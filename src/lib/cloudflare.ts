@@ -14,13 +14,13 @@ export async function translateWithCloudflare(
   request: TranslationRequest
 ): Promise<TranslationResponse> {
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
-  const apiToken = process.env.CLOUDFLARE_API_TOKEN;
+  const apiToken = process.env.CF_AI_TOKEN;
 
   if (!accountId || !apiToken) {
     return {
       translatedText: "",
       success: false,
-      error: "Cloudflare credentials not configured. Set CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN in .env",
+      error: "Cloudflare credentials not configured. Set CLOUDFLARE_ACCOUNT_ID and CF_AI_TOKEN in .env",
     };
   }
 
