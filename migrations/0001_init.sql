@@ -108,6 +108,7 @@ CREATE TABLE IF NOT EXISTS "User" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL DEFAULT '',
     "role" TEXT NOT NULL DEFAULT 'translator',
     "status" TEXT NOT NULL DEFAULT 'active',
     "avatar" TEXT,

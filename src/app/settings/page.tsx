@@ -60,7 +60,7 @@ export default function SettingsPage() {
   const [showUserDialog, setShowUserDialog] = React.useState(false);
   const [editingUser, setEditingUser] = React.useState<User | null>(null);
   const [savingUser, setSavingUser] = React.useState(false);
-  const [userForm, setUserForm] = React.useState({ name: "", email: "", role: "translator" });
+  const [userForm, setUserForm] = React.useState({ name: "", email: "", password: "", role: "translator" });
   const [userError, setUserError] = React.useState("");
 
   React.useEffect(() => {
@@ -71,7 +71,7 @@ export default function SettingsPage() {
   }, []);
 
   const resetUserForm = () => {
-    setUserForm({ name: "", email: "", role: "translator" });
+    setUserForm({ name: "", email: "", password: "", role: "translator" });
     setUserError("");
     setEditingUser(null);
   };
@@ -83,7 +83,7 @@ export default function SettingsPage() {
 
   const handleOpenEditUser = (user: User) => {
     setEditingUser(user);
-    setUserForm({ name: user.name, email: user.email, role: user.role });
+    setUserForm({ name: user.name, email: user.email, password: "", role: user.role });
     setUserError("");
     setShowUserDialog(true);
   };
@@ -91,6 +91,14 @@ export default function SettingsPage() {
   const handleSaveUser = async () => {
     if (!userForm.name.trim() || !userForm.email.trim()) {
       setUserError("Name and email are required");
+      return;
+    }
+    if (!editingUser && !userForm.password.trim()) {
+      setUserError("Password is required for new users");
+      return;
+    }
+    if (userForm.password && userForm.password.length < 6) {
+      setUserError("Password must be at least 6 characters");
       return;
     }
     setSavingUser(true);
@@ -529,6 +537,16 @@ export default function SettingsPage() {
                 value={userForm.email}
                 onChange={(e) => setUserForm((p) => ({ ...p, email: e.target.value }))}
                 placeholder="e.g., jane@company.com"
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Password {editingUser ? "(leave blank to keep current)" : "*"}</label>
+              <Input
+                type="password"
+                value={userForm.password}
+                onChange={(e) => setUserForm((p) => ({ ...p, password: e.target.value }))}
+                placeholder={editingUser ? "Leave blank to keep current password" : "Minimum 6 characters"}
                 className="mt-1"
               />
             </div>
