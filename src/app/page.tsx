@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { DashboardClient } from "./dashboard-client";
 
+export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {

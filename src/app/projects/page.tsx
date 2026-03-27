@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { ProjectsClient } from "./projects-client";
 
+export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 export default async function ProjectsPage() {
