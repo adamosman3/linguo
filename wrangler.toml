@@ -6,4 +6,4 @@ pages_build_output_dir = ".vercel/output/static"
 [[d1_databases]]
 binding = "DB"
 database_name = "linguo-db"
-database_id = "735a5964-e9cf-4103-aba0-871338966175"
+database_id = "67f37eee-6c67-40f9-b687-ba59565e5c7a"
