@@ -1,4 +1,5 @@
 name = "linguo"
+account_id = "957e76f879966209b57d6f31e977f764"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".vercel/output/static"
