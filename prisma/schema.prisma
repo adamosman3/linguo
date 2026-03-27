@@ -1,0 +1,125 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  sourceLanguage String @default("en")
+  targetLanguages String @default("[]") // JSON array of language codes
+  contentType String   @default("website") // website, email_iterable, email_marketo
+  status      String   @default("active") // active, archived
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  strings     TranslationString[]
+  jobs        TranslationJob[]
+}
+
+model TranslationString {
+  id          String   @id @default(cuid())
+  key         String
+  sourceText  String
+  context     String?
+  maxLength   Int?
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  translations Translation[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([projectId, key])
+}
+
+model Translation {
+  id            String   @id @default(cuid())
+  translatedText String
+  language      String
+  status        String   @default("draft") // draft, in_review, approved, rejected
+  translatedBy  String   @default("machine") // machine, human
+  stringId      String
+  string        TranslationString @relation(fields: [stringId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([stringId, language])
+}
+
+model TranslationJob {
+  id            String   @id @default(cuid())
+  name          String
+  projectId     String
+  project       Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  targetLanguages String @default("[]") // JSON array
+  status        String   @default("pending") // pending, in_progress, completed, failed
+  progress      Int      @default(0)
+  totalStrings  Int      @default(0)
+  completedStrings Int   @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model TranslationMemory {
+  id          String   @id @default(cuid())
+  sourceText  String
+  translatedText String
+  sourceLanguage String
+  targetLanguage String
+  usageCount  Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([sourceText, sourceLanguage, targetLanguage])
+}
+
+model GlossaryTerm {
+  id          String   @id @default(cuid())
+  term        String
+  definition  String?
+  translations String  @default("{}") // JSON object {lang: translation}
+  doNotTranslate Boolean @default(false)
+  caseSensitive Boolean @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([term])
+}
+
+model Integration {
+  id          String   @id @default(cuid())
+  type        String   // iterable, marketo, cloudflare
+  name        String
+  config      String   @default("{}") // JSON config
+  enabled     Boolean  @default(false)
+  lastSyncAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([type])
+}
+
+model Language {
+  id        String  @id @default(cuid())
+  code      String  @unique
+  name      String
+  nativeName String?
+  enabled   Boolean @default(true)
+  isSource  Boolean @default(false)
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  role      String   @default("translator") // admin, manager, translator, reviewer, viewer
+  status    String   @default("active") // active, inactive
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
